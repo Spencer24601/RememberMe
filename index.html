@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remember Me — Preserve Their Stories Before It's Too Late</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Dancing+Script:wght@500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F2EA;
+      --parchment: #EDE4D3;
+      --amber: #C8883A;
+      --amber-light: #E8B06A;
+      --forest: #2D4A3E;
+      --forest-light: #3D6355;
+      --bark: #5C3D2E;
+      --ink: #1A1410;
+      --muted: #7A6E64;
+      --white: #FDFAF5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(247,242,234,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,136,58,0.15);
+    }
+
+    .nav-logo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.6rem;
+      color: var(--forest);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-cta {
+      background: var(--forest);
+      color: var(--white);
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--forest-light); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 80%, rgba(200,136,58,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 20%, rgba(45,74,62,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--ink);
+      max-width: 820px;
+      margin-bottom: 1.75rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.35s forwards;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--forest);
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 540px;
+      line-height: 1.7;
+      margin-bottom: 2.75rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.65s forwards;
+    }
+
+    .btn-primary {
+      background: var(--forest);
+      color: var(--white);
+      border: none;
+      padding: 1rem 2.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--forest-light); transform: translateY(-1px); }
+
+    .hero-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    .hero-divider {
+      width: 60px;
+      height: 1px;
+      background: var(--amber-light);
+      margin: 4rem auto 0;
+      opacity: 0;
+      animation: fadeIn 1s ease 1s forwards;
+    }
+
+    /* ── SECTION BASE ── */
+    section { padding: 6rem 2rem; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--forest);
+    }
+
+    .section-body {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 620px;
+    }
+
+    /* ── PROBLEM ── */
+    .problem {
+      background: var(--forest);
+      color: var(--white);
+    }
+
+    .problem .section-label { color: var(--amber-light); }
+    .problem .section-title { color: var(--white); }
+    .problem .section-title em { color: var(--amber-light); }
+    .problem .section-body { color: rgba(255,255,255,0.65); }
+
+    .problem-quote {
+      margin-top: 3rem;
+      border-left: 2px solid var(--amber);
+      padding-left: 1.75rem;
+    }
+
+    .problem-quote blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+
+    .problem-quote cite {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber-light);
+      font-style: normal;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 3rem;
+      margin-top: 3.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--amber-light);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.4;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--parchment); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .step {
+      position: relative;
+      padding-top: 1rem;
+    }
+
+    .step-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      font-weight: 300;
+      color: rgba(200,136,58,0.2);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.6rem;
+    }
+
+    .step-body {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .step-connector {
+      display: none;
+    }
+
+    /* ── KEEPSAKES ── */
+    .keepsakes { background: var(--cream); }
+
+    .keepsake-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .keepsake-card {
+      background: var(--white);
+      border: 1px solid rgba(200,136,58,0.2);
+      padding: 2rem 1.5rem;
+      border-radius: 2px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .keepsake-card:hover {
+      box-shadow: 0 8px 32px rgba(45,74,62,0.08);
+      transform: translateY(-2px);
+    }
+
+    .keepsake-icon {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .keepsake-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .keepsake-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── BENEFITS ── */
+    .benefits { background: var(--parchment); }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .benefit {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .benefit-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      margin-top: 0.55rem;
+      flex-shrink: 0;
+    }
+
+    .benefit-text strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+
+    .benefit-text p {
+      font-size: 0.87rem;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── PROOF ── */
+    .proof { background: var(--cream); }
+
+    .proof-label {
+      display: inline-block;
+      background: rgba(200,136,58,0.12);
+      border: 1px solid rgba(200,136,58,0.3);
+      color: var(--amber);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 2.5rem;
+    }
+
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .testimonial {
+      background: var(--white);
+      border: 1px solid rgba(200,136,58,0.15);
+      padding: 2rem;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .testimonial::before {
+      content: '"';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      color: rgba(200,136,58,0.15);
+      position: absolute;
+      top: -0.5rem;
+      left: 1.25rem;
+      line-height: 1;
+    }
+
+    .testimonial-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+
+    .testimonial-author {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .testimonial-author strong {
+      display: block;
+      color: var(--bark);
+      font-weight: 500;
+      margin-bottom: 0.1rem;
+    }
+
+    .stars {
+      color: var(--amber);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--forest);
+      text-align: center;
+      padding: 7rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(200,136,58,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section .section-label { color: var(--amber-light); }
+
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.2;
+      max-width: 700px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .cta-title em {
+      font-style: italic;
+      color: var(--amber-light);
+    }
+
+    .cta-sub {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 3rem;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    /* ── FORM ── */
+    .waitlist-form {
+      max-width: 460px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .form-input {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white);
+      padding: 0.85rem 1.1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder { color: rgba(255,255,255,0.35); }
+    .form-input:focus { border-color: var(--amber); }
+
+    .form-submit {
+      background: var(--amber);
+      color: var(--white);
+      border: none;
+      padding: 0.9rem 1.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .form-submit:hover { background: var(--amber-light); transform: translateY(-1px); }
+
+    .form-privacy {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(200,136,58,0.3);
+      border-radius: 2px;
+    }
+
+    .form-success .success-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .form-success p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.5;
+    }
+
+    .form-success span {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.45);
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      color: var(--amber-light);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .footer-tagline {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.25rem; }
+      section { padding: 4.5rem 1.25rem; }
+      .form-row { flex-direction: column; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .stat-row { gap: 1.75rem; }
+      .hero { padding: 7rem 1.25rem 4rem; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-logo { font-size: 1.35rem; }
+      .nav-cta { padding: 0.5rem 1rem; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">Remember Me</span>
+  <a href="#join" class="nav-cta">Join the Waitlist</a>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">While there's still time</p>
+  <h1 class="hero-headline">
+    The stories only <em>they</em> can tell<br>won't wait forever.
+  </h1>
+  <p class="hero-sub">
+    Remember Me guides your family through a gentle interview process — capturing the memories, voices, and wisdom of the people you love most. Then we turn them into something you'll keep forever.
+  </p>
+  <div class="hero-cta-group">
+    <a href="#join" class="btn-primary">Reserve Your Spot — It's Free</a>
+    <span class="hero-note">No credit card required &nbsp;·&nbsp; Limited early access</span>
+  </div>
+  <div class="hero-divider"></div>
+</section>
+
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <p class="section-label reveal">The silent loss</p>
+    <h2 class="section-title reveal">Most family stories disappear <em>without warning.</em></h2>
+    <p class="section-body reveal">
+      We keep meaning to sit down with them. To ask about the war, the immigration, the first heartbreak, the decade we weren't alive for. But life moves fast, and suddenly — the window has closed. No recording. No book. No archive. Just a quiet, permanent absence.
+    </p>
+
+    <div class="problem-quote reveal">
+      <blockquote>"I wish I had asked my father more questions while I still could. Now all I have are the things I assumed I'd remember — and I don't."</blockquote>
+      <cite>— A common regret, too late</cite>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat reveal">
+        <div class="stat-number">70%</div>
+        <div class="stat-label">of family history is lost within two generations</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat-number">1 in 3</div>
+        <div class="stat-label">adults say preserving a parent's story is their biggest unfulfilled wish</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat-number">0</div>
+        <div class="stat-label">families have ever said they wished they'd waited longer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="container">
+    <p class="section-label reveal">How it works</p>
+    <h2 class="section-title reveal">Simple, guided, <em>and done for you.</em></h2>
+    <p class="section-body reveal">
+      We handle everything. All your loved one has to do is talk.
+    </p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-number">01</div>
+        <div class="step-title">We send the questions</div>
+        <p class="step-body">Our team crafts a personalized interview guide based on your family's background — covering childhood, milestones, wisdom, and the stories only they know.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-number">02</div>
+        <div class="step-title">They share their story</div>
+        <p class="step-body">Via a relaxed recorded conversation — in-person, on video call, or through written prompts. We guide gently, so nothing feels like an interview.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-number">03</div>
+        <div class="step-title">We craft the keepsake</div>
+        <p class="step-body">Your family's stories are transformed into a beautiful hardcover book, a short film, and a private digital archive — all professionally crafted.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-number">04</div>
+        <div class="step-title">You keep it forever</div>
+        <p class="step-body">Share it at a reunion. Gift it at a milestone birthday. Read it to your own children one day. A living heirloom, for generations to come.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- KEEPSAKES -->
+<section class="keepsakes">
+  <div class="container">
+    <p class="section-label reveal">What you receive</p>
+    <h2 class="section-title reveal">Three ways to hold their <em>story.</em></h2>
+    <div class="keepsake-grid">
+      <div class="keepsake-card reveal">
+        <span class="keepsake-icon">📖</span>
+        <div class="keepsake-title">The Memory Book</div>
+        <p class="keepsake-desc">A professionally designed, hardcover heirloom — their words, photos, and life chapters, bound beautifully. Copies for every branch of the family.</p>
+      </div>
+      <div class="keepsake-card reveal">
+        <span class="keepsake-icon">🎞️</span>
+        <div class="keepsake-title">The Short Film</div>
+        <p class="keepsake-desc">A 10–20 minute documentary-style video capturing their voice, laugh, and spirit. Something your grandchildren will be grateful for.</p>
+      </div>
+      <div class="keepsake-card reveal">
+        <span class="keepsake-icon">☁️</span>
+        <div class="keepsake-title">The Digital Archive</div>
+        <p class="keepsake-desc">A private, searchable, forever-accessible home for their full story — transcripts, recordings, photos, and memories in one secure place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- BENEFITS -->
+<section class="benefits">
+  <div class="container">
+    <p class="section-label reveal">Why families choose us</p>
+    <h2 class="section-title reveal">Built for people who <em>mean to do this</em> — but haven't.</h2>
+    <div class="benefits-grid">
+      <div class="benefit reveal">
+        <div class="benefit-dot"></div>
+        <div class="benefit-text">
+          <strong>Fully guided — no prep needed</strong>
+          <p>We handle every question. Your loved one just shows up and talks. No homework, no pressure.</p>
+        </div>
+      </div>
+      <div class="benefit reveal">
+        <div class="benefit-dot"></div>
+        <div class="benefit-text">
+          <strong>A gift they'll be moved by</strong>
+          <p>Many families start this as a gift to a parent — and discover it becomes the most meaningful thing they've ever done together.</p>
+        </div>
+      </div>
+      <div class="benefit reveal">
+        <div class="benefit-dot"></div>
+        <div class="benefit-text">
+          <strong>Private and secure</strong>
+          <p>Your family's stories belong to your family. No ads, no data sharing, no algorithm. Just yours.</p>
+        </div>
+      </div>
+      <div class="benefit reveal">
+        <div class="benefit-dot"></div>
+        <div class="benefit-text">
+          <strong>Works at any distance</strong>
+          <p>In the same room or across the world — our process works whether you're local or remote.</p>
+        </div>
+      </div>
+      <div class="benefit reveal">
+        <div class="benefit-dot"></div>
+        <div class="benefit-text">
+          <strong>Professional quality</strong>
+          <p>Designed, edited, and produced by our team. The result looks and feels like something that belongs on a shelf for 100 years.</p>
+        </div>
+      </div>
+      <div class="benefit reveal">
+        <div class="benefit-dot"></div>
+        <div class="benefit-text">
+          <strong>Start in under 10 minutes</strong>
+          <p>Join the waitlist today, and we'll walk you through everything. No complexity. Just start.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PROOF -->
+<section class="proof">
+  <div class="container">
+    <div class="reveal">
+      <span class="proof-label">✦ Pilot program feedback</span>
+    </div>
+    <h2 class="section-title reveal">Early families have called it <em>life-changing.</em></h2>
+    <div class="testimonials">
+      <div class="testimonial reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">My mother is 84. I always meant to write down her stories. Remember Me made it actually happen — and what we got back made our whole family cry, in the best way.</p>
+        <div class="testimonial-author">
+          <strong>Sarah T.</strong>
+          Daughter, pilot participant · Chicago, IL
+        </div>
+      </div>
+      <div class="testimonial reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">My dad isn't much of a talker, but the questions they sent unlocked something. He talked for three hours. I didn't know half of what he told us that day.</p>
+        <div class="testimonial-author">
+          <strong>Marcus D.</strong>
+          Son, pilot participant · Atlanta, GA
+        </div>
+      </div>
+      <div class="testimonial reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">We gave the book to my grandmother on her 90th birthday. She held it and didn't say anything for a full minute. That silence was worth everything.</p>
+        <div class="testimonial-author">
+          <strong>Elena R.</strong>
+          Granddaughter, pilot participant · Portland, OR
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA / WAITLIST -->
+<section class="cta-section" id="join">
+  <div class="container">
+    <p class="section-label reveal">The right time is now</p>
+    <h2 class="cta-title reveal">Don't let another year pass <em>without their story.</em></h2>
+    <p class="cta-sub reveal">Join the waitlist for early access. We'll reach out personally to get you started — no commitment, no pressure.</p>
+
+    <div class="waitlist-form reveal" id="waitlistForm">
+      <div class="form-row">
+        <input type="text" class="form-input" id="nameInput" placeholder="Your first name" autocomplete="given-name" />
+        <input type="email" class="form-input" id="emailInput" placeholder="Your email" autocomplete="email" />
+      </div>
+      <button class="form-submit" onclick="handleSubmit()">Reserve My Spot →</button>
+      <p class="form-privacy">No spam, ever. Just a personal note from our team when your spot is ready.</p>
+    </div>
+
+    <div class="form-success" id="formSuccess">
+      <span class="success-icon">🌿</span>
+      <p>You're on the list. We'll be in touch soon — and we mean that personally.</p>
+      <span>In the meantime, maybe call them today.</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Remember Me</span>
+  <p class="footer-tagline">Preserving the stories that matter most</p>
+</footer>
+
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Form submission
+  function handleSubmit() {
+    const name = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name) { document.getElementById('nameInput').focus(); return; }
+    if (!email || !emailRegex.test(email)) { document.getElementById('emailInput').focus(); return; }
+
+    document.getElementById('waitlistForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+
+    // In production: POST to your API here
+    console.log('Waitlist signup:', { name, email });
+  }
+
+  // Allow Enter key on inputs
+  document.querySelectorAll('.form-input').forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleSubmit();
+    });
+  });
+</script>
+
+</body>
+</html>

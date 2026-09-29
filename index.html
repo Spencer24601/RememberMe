@@ -943,35 +943,10 @@
 <section class="proof">
   <div class="container">
     <div class="reveal">
-      <span class="proof-label">✦ Pilot program feedback</span>
+      <span class="proof-label">✦ Now accepting our first families</span>
     </div>
-    <h2 class="section-title reveal">Early families have called it <em>life-changing.</em></h2>
-    <div class="testimonials">
-      <div class="testimonial reveal">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-text">My mother is 84. I always meant to write down her stories. Remember Me made it actually happen — and what we got back made our whole family cry, in the best way.</p>
-        <div class="testimonial-author">
-          <strong>Sarah T.</strong>
-          Daughter, pilot participant · Chicago, IL
-        </div>
-      </div>
-      <div class="testimonial reveal">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-text">My dad isn't much of a talker, but the questions they sent unlocked something. He talked for three hours. I didn't know half of what he told us that day.</p>
-        <div class="testimonial-author">
-          <strong>Marcus D.</strong>
-          Son, pilot participant · Atlanta, GA
-        </div>
-      </div>
-      <div class="testimonial reveal">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-text">We gave the book to my grandmother on her 90th birthday. She held it and didn't say anything for a full minute. That silence was worth everything.</p>
-        <div class="testimonial-author">
-          <strong>Elena R.</strong>
-          Granddaughter, pilot participant · Portland, OR
-        </div>
-      </div>
-    </div>
+    <h2 class="section-title reveal">Be one of the <em>first families.</em></h2>
+    <p class="section-body reveal">Remember Me is just getting started. Our first families get a personal, hands-on experience from interview to finished keepsake — and help shape what we build next.</p>
   </div>
 </section>
 
@@ -988,7 +963,8 @@
         <input type="text" class="form-input" id="bookNameInput" placeholder="Your first name" autocomplete="given-name" />
         <input type="email" class="form-input" id="bookEmailInput" placeholder="Your email" autocomplete="email" />
       </div>
-      <button class="form-submit" onclick="handleBookSubmit()">Start My Story →</button>
+      <button class="form-submit" id="bookSubmit" onclick="handleBookSubmit()">Start My Story →</button>
+      <p class="form-error" id="bookFormError" role="alert" style="display:none;color:#A4452C;margin-top:0.75rem;font-size:0.9rem;"></p>
       <p class="form-privacy">No spam, ever. Just a personal note from our team within 24 hours.</p>
     </div>
 
@@ -1036,20 +1012,7 @@
     <h2 class="cta-title reveal">Don't let another year pass <em>without their story.</em></h2>
     <p class="cta-sub reveal">Begin in under 2 minutes. We'll reach out personally to get you started — no commitment, no pressure.</p>
 
-    <div class="waitlist-form reveal" id="waitlistForm">
-      <div class="form-row">
-        <input type="text" class="form-input" id="nameInput" placeholder="Your first name" autocomplete="given-name" />
-        <input type="email" class="form-input" id="emailInput" placeholder="Your email" autocomplete="email" />
-      </div>
-      <button class="form-submit" onclick="handleSubmit()">Start My Story →</button>
-      <p class="form-privacy">No spam, ever. Just a personal note from our team when your spot is ready.</p>
-    </div>
-
-    <div class="form-success" id="formSuccess">
-      <span class="success-icon">🌿</span>
-      <p>You're on the list. We'll be in touch soon — and we mean that personally.</p>
-      <span>In the meantime, maybe call them today.</span>
-    </div>
+    <a href="#book" class="btn-primary reveal">Start My Story →</a>
   </div>
 </section>
 
@@ -1074,38 +1037,46 @@
   }, { threshold: 0.12 });
   reveals.forEach(el => observer.observe(el));
 
-  // Book form submission
-  function handleBookSubmit() {
-    const name = document.getElementById('bookNameInput').value.trim();
-    const email = document.getElementById('bookEmailInput').value.trim();
+  // Signups are saved to Supabase (table: legacy_signups, insert-only for visitors)
+  const SUPABASE_URL = 'https://lbejhxvcmjaiictddzdu.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_y_gzgA2BrVSJnjvQ24qkjw_MMNxfxiN';
+
+  async function handleBookSubmit() {
+    const nameEl = document.getElementById('bookNameInput');
+    const emailEl = document.getElementById('bookEmailInput');
+    const btn = document.getElementById('bookSubmit');
+    const errEl = document.getElementById('bookFormError');
+    const name = nameEl.value.trim();
+    const email = emailEl.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!name) { document.getElementById('bookNameInput').focus(); return; }
-    if (!email || !emailRegex.test(email)) { document.getElementById('bookEmailInput').focus(); return; }
-    document.getElementById('bookForm').style.display = 'none';
-    document.getElementById('bookFormSuccess').style.display = 'block';
-    console.log('Book signup:', { name, email });
+    if (!name) { nameEl.focus(); return; }
+    if (!email || !emailRegex.test(email)) { emailEl.focus(); return; }
+    if (btn.disabled) return;
+    btn.disabled = true; btn.textContent = 'Saving…'; errEl.style.display = 'none';
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/legacy_signups', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ first_name: name, email: email, source: 'landing' })
+      });
+      if (!res.ok) throw new Error('Save failed: ' + res.status);
+      document.getElementById('bookForm').style.display = 'none';
+      document.getElementById('bookFormSuccess').style.display = 'block';
+    } catch (e) {
+      errEl.textContent = "Sorry — we couldn't save that. Please try again in a moment.";
+      errEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Start My Story →';
+    }
   }
 
-  // Waitlist form submission
-  function handleSubmit() {
-    const name = document.getElementById('nameInput').value.trim();
-    const email = document.getElementById('emailInput').value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!name) { document.getElementById('nameInput').focus(); return; }
-    if (!email || !emailRegex.test(email)) { document.getElementById('emailInput').focus(); return; }
-    document.getElementById('waitlistForm').style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
-    console.log('Waitlist signup:', { name, email });
-  }
-
-  // Allow Enter key on all inputs
+  // Allow Enter key on the form inputs
   document.querySelectorAll('.form-input').forEach(input => {
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        const form = input.closest('.book-form') ? handleBookSubmit : handleSubmit;
-        form();
-      }
-    });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') handleBookSubmit(); });
   });
 </script>
 

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Remember Me — Story Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Dancing+Script:wght@500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F2EA;
+      --parchment: #EDE4D3;
+      --amber: #C8883A;
+      --amber-light: #E8B06A;
+      --forest: #2D4A3E;
+      --forest-light: #3D6355;
+      --bark: #5C3D2E;
+      --ink: #1A1410;
+      --muted: #7A6E64;
+      --white: #FDFAF5;
+      --error: #9B3B2A;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(200,136,58,0.15);
+    }
+
+    .nav-logo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.6rem;
+      color: var(--forest);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .nav-note {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 5rem;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .lede {
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── FORM ── */
+    .field { margin-bottom: 1.4rem; }
+
+    .field-row { display: flex; gap: 1rem; }
+    .field-row .field { flex: 1; }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bark);
+      margin-bottom: 0.5rem;
+    }
+
+    .hint {
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(200,136,58,0.3);
+      color: var(--ink);
+      padding: 0.85rem 1.1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: var(--muted); }
+    .form-input:focus { border-color: var(--amber); }
+
+    textarea.form-input {
+      min-height: 280px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--forest);
+      color: var(--white);
+      border: none;
+      padding: 0.9rem 1.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--forest-light); }
+    .btn:disabled { opacity: 0.6; cursor: default; }
+
+    .btn-quiet {
+      background: transparent;
+      color: var(--forest);
+      border: 1px solid rgba(45,74,62,0.35);
+    }
+    .btn-quiet:hover { background: rgba(45,74,62,0.06); }
+
+    .status { font-size: 0.88rem; color: var(--muted); }
+    .error { font-size: 0.9rem; color: var(--error); margin-top: 1rem; display: none; }
+
+    .privacy {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1.25rem;
+      line-height: 1.5;
+    }
+
+    /* ── CHAPTER ── */
+    .chapter {
+      display: none;
+      margin-top: 3.5rem;
+      background: var(--white);
+      border: 1px solid rgba(200,136,58,0.2);
+      padding: 3rem 3rem 2.5rem;
+    }
+
+    .chapter-meta {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1rem;
+    }
+
+    .chapter h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .chapter-body p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      line-height: 1.7;
+      margin-bottom: 1.1rem;
+    }
+
+    .chapter .actions {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(200,136,58,0.2);
+    }
+
+    footer {
+      background: var(--ink);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.6rem;
+      color: var(--amber-light);
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1rem; }
+      main { padding: 2.5rem 1rem 4rem; }
+      .field-row { flex-direction: column; gap: 0; }
+      .chapter { padding: 2rem 1.25rem 1.5rem; }
+      .chapter h2 { font-size: 1.8rem; }
+      .chapter-body p { font-size: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="./" class="nav-logo">Remember Me</a>
+  <span class="nav-note">Story generator</span>
+</nav>
+
+<main>
+  <h1>Turn an interview into a chapter</h1>
+  <p class="lede">Paste the transcript of a conversation with your loved one. You'll get back a chapter of their life story, written in their own voice.</p>
+
+  <div class="field">
+    <label for="accessCode">Access code</label>
+    <input type="password" class="form-input" id="accessCode" autocomplete="off" placeholder="The code we shared with you" />
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="name">Storyteller's first name</label>
+      <input type="text" class="form-input" id="name" placeholder="e.g. Ruth" />
+    </div>
+    <div class="field">
+      <label for="focus">Chapter focus <span class="hint">(optional)</span></label>
+      <input type="text" class="form-input" id="focus" placeholder="e.g. childhood, how we met" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="transcript">Interview transcript <span class="hint">(an Otter.ai export works well)</span></label>
+    <textarea class="form-input" id="transcript" placeholder="Paste the full transcript here…"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="generate">Generate chapter</button>
+    <span class="status" id="status"></span>
+  </div>
+  <p class="error" id="error" role="alert"></p>
+  <p class="privacy">Transcripts are sent to Claude to write the chapter and aren't saved by this site.</p>
+
+  <article class="chapter" id="chapter" aria-live="polite">
+    <p class="chapter-meta" id="chapterMeta"></p>
+    <h2 id="chapterTitle"></h2>
+    <div class="chapter-body" id="chapterBody"></div>
+    <div class="actions">
+      <button class="btn btn-quiet" id="copy">Copy chapter</button>
+      <span class="status" id="copyStatus"></span>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <span class="footer-logo">Remember Me</span>
+</footer>
+
+<script>
+  const FUNCTION_URL = 'https://lbejhxvcmjaiictddzdu.supabase.co/functions/v1/generate-story';
+  const CODE_KEY = 'rememberme-access-code';
+
+  const $ = (id) => document.getElementById(id);
+  let chapterText = '';
+
+  // Remember the access code on this device so family only types it once.
+  try { $('accessCode').value = localStorage.getItem(CODE_KEY) || ''; } catch (e) {}
+
+  function showError(message) {
+    $('error').textContent = message;
+    $('error').style.display = 'block';
+  }
+
+  function renderChapter(text) {
+    const lines = text.split('\n');
+    let title = '';
+    if (lines[0].startsWith('# ')) title = lines.shift().slice(2).trim();
+
+    $('chapterTitle').textContent = title;
+    $('chapterTitle').style.display = title ? 'block' : 'none';
+    $('chapterBody').replaceChildren(
+      ...lines.join('\n').split(/\n\s*\n/).map(s => s.trim()).filter(Boolean).map(para => {
+        const p = document.createElement('p');
+        p.textContent = para;
+        return p;
+      })
+    );
+
+    const words = text.split(/\s+/).filter(Boolean).length;
+    $('chapterMeta').textContent = `${$('name').value.trim()} · ${words.toLocaleString()} words`;
+    $('chapter').style.display = 'block';
+    $('chapter').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function generate() {
+    const accessCode = $('accessCode').value.trim();
+    const name = $('name').value.trim();
+    const focus = $('focus').value.trim();
+    const transcript = $('transcript').value.trim();
+
+    $('error').style.display = 'none';
+    if (!accessCode) { $('accessCode').focus(); return showError('Enter the access code.'); }
+    if (!name) { $('name').focus(); return showError("Enter the storyteller's first name."); }
+    if (!transcript) { $('transcript').focus(); return showError('Paste a transcript first.'); }
+
+    const btn = $('generate');
+    btn.disabled = true;
+    btn.textContent = 'Writing…';
+    const started = Date.now();
+    const tick = () => { $('status').textContent = `Writing the chapter… ${Math.round((Date.now() - started) / 1000)}s (usually under a minute)`; };
+    tick();
+    const timer = setInterval(tick, 1000);
+
+    try {
+      const res = await fetch(FUNCTION_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessCode, name, focus, transcript }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+
+      try { localStorage.setItem(CODE_KEY, accessCode); } catch (e) {}
+      chapterText = data.chapter;
+      renderChapter(data.chapter);
+      if (data.truncated) showError('The chapter was cut off before it finished. Try a shorter transcript or a narrower focus.');
+    } catch (e) {
+      showError(e.message === 'Failed to fetch' ? "Couldn't reach the generator. Check your connection and try again." : e.message);
+    } finally {
+      clearInterval(timer);
+      $('status').textContent = '';
+      btn.disabled = false;
+      btn.textContent = 'Generate chapter';
+    }
+  }
+
+  async function copyChapter() {
+    const plain = chapterText.replace(/^# /, '');
+    try {
+      await navigator.clipboard.writeText(plain);
+      $('copyStatus').textContent = 'Copied.';
+    } catch (e) {
+      $('copyStatus').textContent = "Couldn't copy. Select the text and copy it instead.";
+    }
+    setTimeout(() => { $('copyStatus').textContent = ''; }, 2500);
+  }
+
+  $('generate').addEventListener('click', generate);
+  $('copy').addEventListener('click', copyChapter);
+</script>
+
+</body>
+</html>
